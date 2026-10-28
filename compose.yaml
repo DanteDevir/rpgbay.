@@ -1,0 +1,71 @@
+name: rpgbay
+services:
+  postgres:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_DB: rpgbay
+      POSTGRES_USER: rpgbay
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina senha exclusiva do PostgreSQL}
+    volumes: [database:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U rpgbay -d rpgbay"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    build: { context: ., dockerfile: infra/Dockerfile, target: api }
+    env_file: .env.production
+    command: [npm, run, db:migrate]
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
+  api:
+    build: { context: ., dockerfile: infra/Dockerfile, target: api }
+    env_file: .env.production
+    environment:
+      {
+        NODE_ENV: production,
+        DEV_AUTH_ENABLED: "false",
+        PORT: "3001",
+        HOST: 0.0.0.0,
+      }
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          'fetch("http://127.0.0.1:3001/api/health").then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    read_only: true
+    tmpfs: [/tmp]
+    restart: unless-stopped
+  web:
+    build: { context: ., dockerfile: infra/Dockerfile, target: web }
+    environment: { PUBLIC_HOST: "${PUBLIC_HOST:-rpgbay.libbay.com}" }
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes: [caddy_data:/data, caddy_config:/config]
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+  scanner:
+    profiles: [publishing]
+    build: { context: ., dockerfile: infra/Dockerfile, target: scanner }
+    env_file: .env.production
+    environment: { SCANNER_PORT: "3002", SCANNER_HOST: "0.0.0.0" }
+    volumes: [clamav:/var/lib/clamav]
+    tmpfs: [/tmp:size=2147483648]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+volumes:
+  database:
+  caddy_data:
+  caddy_config:
+  clamav:
