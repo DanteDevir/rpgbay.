@@ -1,0 +1,1 @@
+O código desta integração é parte da entrega RPG BAY. A distribuição comercial requer confirmação da licença geral do projeto pelo proprietário. Foundry VTT e seus sistemas têm suas próprias licenças. Este pacote não contém código, conteúdo editorial, marca ou chave de licença de terceiros.

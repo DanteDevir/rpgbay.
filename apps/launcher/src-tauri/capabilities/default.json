@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "Local RPG BAY window; no arbitrary shell, remote filesystem or remote IPC",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

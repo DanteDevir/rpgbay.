@@ -1,0 +1,11 @@
+{
+  "id": "letargia-rpgbay",
+  "title": "LETARGIA RPG BAY",
+  "description": "Pareamento autorizado e sincronização limitada de atores, retratos e combate com RPG BAY.",
+  "version": "1.0.0",
+  "compatibility": { "minimum": "13", "maximum": "13" },
+  "authors": [{ "name": "LETARGIA RPG" }],
+  "esmodules": ["scripts/module.js"],
+  "socket": false,
+  "license": "LICENSE.md"
+}

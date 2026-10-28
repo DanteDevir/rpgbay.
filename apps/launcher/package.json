@@ -1,0 +1,16 @@
+{
+  "name": "@rpgbay/launcher",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "android:init": "tauri android init",
+    "android:build": "tauri android build",
+    "ios:init": "tauri ios init",
+    "ios:build": "tauri ios build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.4"
+  }
+}

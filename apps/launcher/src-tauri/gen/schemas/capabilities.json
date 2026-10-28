@@ -1,0 +1,1 @@
+{"main":{"identifier":"main","description":"Local RPG BAY window; no arbitrary shell, remote filesystem or remote IPC","local":true,"windows":["main"],"permissions":["core:default"]}}
